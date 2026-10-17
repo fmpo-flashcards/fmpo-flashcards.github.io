@@ -484,7 +484,10 @@ export async function loadDisc(i) {
   const idx = await loadIndex();
   const disc = await fetchJSON(idx[i].file);
   _discs[i] = disc;
-  for (const t of disc.topics) _topicsById[t.id] = { discIdx: i, topic: t };
+  // Never let a topic without an id collapse the lookup: without this,
+  // every t.id is undefined, _topicsById keeps only the LAST topic,
+  // and every topic in the discipline opens the same cards.
+  disc.topics.forEach((t, j) => { if (!t.id) t.id = 'd' + i + 't' + j; _topicsById[t.id] = { discIdx: i, topic: t }; });
   return disc;
 }
 export async function loadAllDiscs() {
