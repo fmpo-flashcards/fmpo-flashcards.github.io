@@ -5,7 +5,7 @@
      toujours frais en ligne, repli sur le cache hors-ligne.
    Les appels Firebase / Google ne sont jamais mis en cache.
    IMPORTANT : incrémenter CACHE à chaque changement de stratégie/fichiers. */
-const CACHE = 'fmpo-v1';
+const CACHE = 'fmpo-v2';
 const CORE = [
   './', 'index.html', 'home.html', 'discipline.html', 'topic.html',
   'classement.html', 'plan.html', 'profil.html',
