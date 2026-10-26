@@ -1,16 +1,19 @@
 /* FMPO Flashcards — service worker : application multi-pages.
    - shell (pages HTML, js, css…) : NETWORK-FIRST → chaque déploiement
      est pris en compte dès la visite suivante, avec repli sur le cache hors-ligne.
-   - données (disc-*.json, index.json, plan.json) : NETWORK-FIRST →
-     toujours frais en ligne, repli sur le cache hors-ligne.
+   - données (disc-*.json, index.json, topics-index.json, plan.json) : CACHE-FIRST →
+     chargées à la demande par page, disponibles hors-ligne.
    Les appels Firebase / Google ne sont jamais mis en cache.
-   IMPORTANT : incrémenter CACHE à chaque changement de stratégie/fichiers. */
-const CACHE = 'fmpo-v4';
+   IMPORTANT : incrémenter CACHE à chaque changement de stratégie/fichiers.
+   CORE ne liste QUE des fichiers qui existent (un 404 fait échouer tout
+   l'install : pas de qcm.html / um6ss*.html ici). */
+const CACHE = 'fmpo-v5';
 const CORE = [
   './', 'index.html', 'home.html', 'discipline.html', 'topic.html',
   'classement.html', 'plan.html', 'profil.html',
   'styles.css', 'firebase-config.js', 'manifest.json',
   'fmpo-logo-circle.jpg', 'fmpo-logo-banner.jpg',
+  'icon-192.png', 'icon-512.png',
   'js/common.js', 'js/login.js', 'js/home.js', 'js/discipline.js',
   'js/topic.js', 'js/classement.js',
   'js/plan.js', 'js/profil.js',
@@ -54,15 +57,18 @@ self.addEventListener('fetch', (e) => {
 
 
   if (isData) {
-    // Données : réseau d'abord (toujours frais), repli cache hors-ligne.
+    // Données : cache d'abord (fichiers stables, chargés à la demande).
     e.respondWith(
-      fetch(e.request).then((res) => {
-        if (res.ok) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, copy));
-        }
-        return res;
-      }).catch(() => caches.match(e.request))
+      caches.match(e.request).then((hit) => {
+        if (hit) return hit;
+        return fetch(e.request).then((res) => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, copy));
+          }
+          return res;
+        });
+      })
     );
     return;
   }
