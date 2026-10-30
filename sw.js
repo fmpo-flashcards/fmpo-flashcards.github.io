@@ -7,14 +7,14 @@
    IMPORTANT : incrémenter CACHE à chaque changement de stratégie/fichiers.
    CORE ne liste QUE des fichiers qui existent (un 404 fait échouer tout
    l'install : pas de qcm.html / um6ss*.html ici). */
-const CACHE = 'fmpo-v5';
+const CACHE = 'fmpo-v6';
 const CORE = [
   './', 'index.html', 'home.html', 'discipline.html', 'topic.html',
   'classement.html', 'plan.html', 'profil.html',
   'styles.css', 'firebase-config.js', 'manifest.json',
   'fmpo-logo-circle.jpg', 'fmpo-logo-banner.jpg',
   'icon-192.png', 'icon-512.png',
-  'js/common.js', 'js/login.js', 'js/home.js', 'js/discipline.js',
+  'js/common.js', 'js/login.js', 'js/home.js', 'js/atlas-promo.js', 'js/discipline.js',
   'js/topic.js', 'js/classement.js',
   'js/plan.js', 'js/profil.js',
   'vendor/firebase/firebase-app.js', 'vendor/firebase/firebase-auth.js',
